@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+       
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetData")",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                var result = JSON.parse(data);
+                result.pokemon.sort(function (a, b) {
+                    return  a.name.localeCompare(b.name);
+                });
+                $.each(result.pokemon, function (i,item) {
+                    var typeval = "";
+                    if (item.type != undefined) {
+                        if (item.type.length > 0) {
+
+                            for (var j = 0; j < item.type.length; j++) {
+                                typeval = typeval + item.type[j] + '<br>';
+                            }
+                        }
+                    }
+                    else {
+                        typeval = "NA";
+                    }
+                    var weakval = "";
+                    if (item.weaknesses != undefined ) {
+                        if (item.weaknesses.length > 0) {
+                            for (var j = 0; j < item.weaknesses.length; j++) {
+                                weakval = weakval  + item.weaknesses[j] +'<br>';
+                            }
+                        }
+                    }
+                    else {
+                        weakval = "NA";
+                    }
+                    var evoval = "";
+                    if (item.next_evolution != undefined) {
+                        if (item.next_evolution.length > 0) {
+                            for (var j = 0; j < item.next_evolution.length; j++) {
+                                evoval = evoval + 'Number:' + item.next_evolution[j].num + ' Name:' + item.next_evolution[j].name + '<br>';
+                            }
+                        }
+                    }
+                    else {
+                        evoval = "NA";
+                    }
+                    $('#tblPokemon').append('<tr>' +
+                        '<td >' + item.name + '</td >' +
+                        '<td >' + item.num + '</td >' +
+                        '<td > ' + typeval + '</td >' +
+                        '<td >' + item.height + '</td >' +
+                            '<td >' + item.weight + '</td >' +
+                        '<td > ' + weakval + '</td >' +
+                    '<td > ' + evoval + '</td ></tr > ');
+
+                });
+            },
+            error: function (req, status, error) {
+                console.log(error);
+            }
+        });
+    });
+</script>
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+<div class="text-center">
+    <h1 class="display-4">Pokedex</h1>
+    <p>Welcome to the world of pokemon</p>
+</div>
+
+<div>
+    <table id="tblPokemon">
+        <tr>
+            <th>Name</th>
+            <th>Number</th>
+            <th>Type</th>
+            <th>Height</th>
+            <th>Weight</th>
+            <th>Weakness</th>
+            <th>Next Evolution</th>
+        </tr>
+    </table>
+</div>
+
